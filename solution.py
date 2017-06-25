@@ -7,15 +7,22 @@ def cross(A, B):
     "Cross product of elements in A and elements in B."
     return [s+t for s in A for t in B]
 
-# Boxes in Sudoku puzzle where each box contains 1 number. boxes = ['A1', 'A2', ..., 'I9']
+# 1x1 boxes in Sudoku puzzle where each box contains 1 number. boxes = ['A1', 'A2', ..., 'I9']
 boxes = cross(rows, cols)
 
+# List of list containing 9 1x1 boxes in each row of the sudoku puzzle
 row_units = [cross(r, cols) for r in rows]
+# List of list containing 9 1x1 boxes in each column of the sudoku puzzle
 column_units = [cross(rows, c) for c in cols]
+# List of list containing 9 1x1 boxes in each 3x3 box of the sudoku puzzle
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
+# List of 2 lists containing 9 1x1 boxes along the diagonal and anti-diagonal of the sudoku puzzle
 diag_units = [[x+y for x,y in zip(rows,cols)], [x+y for x,y in zip(rows,cols[::-1])]]
+
 unitlist = row_units + column_units + square_units + diag_units
+# Dictionary for all boxes containing all its constraining units as values
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
+# Dictionary for all boxes containing all its constraining boxes as values
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 
@@ -34,6 +41,7 @@ def assign_value(values, box, value):
         assignments.append(values.copy())
     return values
 
+# Naked Twins Concept: http://www.sudokudragon.com/tutorialnakedtwins.htm
 def naked_twins(values):
     """Eliminate values using the naked twins strategy.
     Args:
@@ -94,7 +102,7 @@ def display(values):
         if r in 'CF': print(line)
     print
 
-
+# This function removes possible values for a box from values list contsrained by the peers dictionary for each box
 def eliminate(values):
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
@@ -103,7 +111,7 @@ def eliminate(values):
             values[peer] = values[peer].replace(digit,'')
     return values
 
-
+# This function checks if only 1 possible value is left for any of the box in its 'values' list and assigns the same.
 def only_choice(values):
     for unit in unitlist:
         for digit in '123456789':
@@ -112,7 +120,7 @@ def only_choice(values):
                 values[dplaces[0]] = digit
     return values
 
-
+# This puzzle iteratively works on applying the constrained methods until there is no further update to the puzzle state
 def reduce_puzzle(values):
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     stalled = False
@@ -128,6 +136,7 @@ def reduce_puzzle(values):
             return False
     return values
 
+# This method applies DFS technique to check if a certain value assignment leads us to a solution
 def search(values):
     "Using depth-first search and propagation, try all possible values."
     # First, reduce the puzzle using the previous function
