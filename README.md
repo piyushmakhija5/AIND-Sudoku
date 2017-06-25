@@ -3,11 +3,15 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: In the reduce_puzzle function which  is used iteratively to satisfy eliminate and only_choice constraint, we add another constraint for naked twins. This way in every iteration, after checkingfor existing constraints, our code will now also check for naked twin condition.
+
+In the naked_twins function, we first look for all twins and store them in a twins_dict dcitionary. Next we check if any of these twins satisfy the naked_twins condition i.e. if any key in the twin_dict has exactly 2 value elements. We add such elements to the naked_twins dictionary. Next from this dictionary we identify the unit where we can apply this constraint and replace the possible values in the  identified boxes
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: Identify Diagonal elements and add them to unitlist(i.e. list of constraints used for normal sudoku). This will add an additional constraint for the system needed to be satisfied for diagonal sudoku puzzle
+
+To identify diagonal elements we zip the the 'rows list'+'inverse column list' and 'inverse row list'+'column list' to get the diagonal and anti-diagonal.
 
 ### Install
 
